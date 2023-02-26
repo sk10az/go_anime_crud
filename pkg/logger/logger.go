@@ -5,7 +5,10 @@ import (
 	"github.com/rs/zerolog"
 	"os"
 	"strings"
+	"time"
 )
+
+const skipFrameCount = 3
 
 type Interface interface {
 	Debug(message interface{}, args ...interface{})
@@ -37,9 +40,20 @@ func New(level string) *Logger {
 
 	zerolog.SetGlobalLevel(l)
 
-	skipFrameCount := 3
 	logger := zerolog.
-		New(os.Stdout).
+		New(zerolog.ConsoleWriter{
+			Out:        os.Stdout,
+			TimeFormat: time.RFC3339,
+			FormatLevel: func(i interface{}) string {
+				return strings.ToUpper(fmt.Sprintf("[%s]", i))
+			},
+			FormatMessage: func(i interface{}) string {
+				return fmt.Sprintf("| %s", i)
+			},
+			// FormatCaller: func(i interface{}) string {
+			// 	return filepath.Base(fmt.Sprintf("%s", i))
+			// },
+		}).
 		With().
 		Timestamp().
 		CallerWithSkipFrameCount(zerolog.CallerSkipFrameCount + skipFrameCount).
