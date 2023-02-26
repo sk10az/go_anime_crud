@@ -1,0 +1,64 @@
+@hostname = http://localhost
+@port = 8080
+@contentType = application/json
+
+@url = {{hostname}}:{{port}}
+@api = /api/ac
+
+@user1 = {"id": 1, "name": "Andrii", "age": 24, "desc": "Golang developer"}
+@user1.1 = {"id": 1, "name": "Andrii", "age": 22, "desc": "Python developer"}
+@user2 = {"id": 2, "name": "Lida", "age": 22, "desc": "Andrii's wife"}
+
+// Pinging . . .
+GET {{url}} HTTP/1.1
+
+###
+// Create AC #1
+POST {{url}}{{api}} HTTP/1.1
+content-type: {{contentType}}
+
+{{user1}}
+
+###
+// Create AC #2
+POST {{url}}{{api}} HTTP/1.1
+content-type: {{contentType}}
+
+{{user2}}
+
+###
+// Bad ID for GET
+GET {{url}}{{api}}/a HTTP/1.1
+
+###
+// Get AC #1
+GET {{url}}{{api}}/1 HTTP/1.1
+
+###
+// Get AC #2
+GET {{url}}{{api}}/2 HTTP/1.1
+
+###
+
+// Get all AC
+GET {{url}}{{api}}/ HTTP/1.1
+
+###
+// Bad ID for DELETE
+DELETE {{url}}{{api}}/a HTTP/1.1
+
+###
+// Delete AC #1
+DELETE {{url}}{{api}}/1 HTTP/1.1
+
+###
+
+// Delete AC #2
+DELETE {{url}}{{api}}/2 HTTP/1.1
+
+###
+// Update AC #1
+PUT {{url}}{{api}}/1 HTTP/1.1
+content-type: {{contentType}}
+
+{{user1.1}}
